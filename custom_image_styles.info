@@ -1,0 +1,4 @@
+name = Custom Image Styles
+description = Custom image styles, now implemented Blur
+package = Images
+core = 7.x

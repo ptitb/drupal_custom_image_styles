@@ -1,0 +1,57 @@
+<?php
+
+/**
+ * Implements hook_theme().
+ */
+function custom_image_styles_theme() {
+  return array(
+    'custom_image_styles_blur_summary' => array(
+      'variables' => array('data' => NULL),
+    ),
+  );
+}
+
+function custom_image_styles_image_effect_info() {
+  return array(
+    'custom_image_styles_blur' => array(
+      'label' => t('Blur'),
+      'help' => t('Blur an image.'),
+      'effect callback' => 'custom_image_styles_blur_effect',
+      'form callback' => 'custom_image_styles_blur_form',
+      'dimensions passthrough' => FALSE,
+      'summary theme' => 'custom_image_styles_blur_summary',
+    )
+  );
+}
+
+function custom_image_styles_blur_form($data) {
+  $form = array();
+
+  $form['blur_amount'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Blur amount'),
+    '#description' => t('The amount of blur being applied.'),
+    '#default_value' => (isset($data['blur_amount'])) ? $data['blur_amount'] : 1,
+    '#required' => TRUE,
+    '#size' => 10,
+    '#element_validate' => array('image_effect_integer_validate'),
+    '#allow_negative' => FALSE,
+  );
+
+  return $form;
+}
+
+function custom_image_styles_blur_effect(&$image, $data) {
+  for ($i = 0; $i < $data['blur_amount']; $i++) {
+    imagefilter($image->resource, IMG_FILTER_GAUSSIAN_BLUR);
+  }
+  return imagefilter($image->resource, IMG_FILTER_GAUSSIAN_BLUR);
+}
+
+function theme_custom_image_styles_blur_summary($variables) {
+  $data = $variables['data'];
+  return t('amount') . ' ' . $data['blur_amount'];
+}
+
+
+
